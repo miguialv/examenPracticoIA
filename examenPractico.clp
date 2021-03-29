@@ -39,7 +39,7 @@
     (?resultadoOp = ?resultadoSuma)	 	 
     =>
     (assert (lista resultadoOp))
-    (retract (lista ?sumando1 ?sumando2) 
+    (retract (lista ?sumando1 ?sumando2)) 
     (printout t "El resultado de la suma es:" resultadoSuma) 
 )
 
@@ -50,7 +50,7 @@
     (test(<= ?resultadoResta 0))	  
     =>
     (assert (lista resultadoOp))
-    (retract (lista ?restando1 ?restando2) 
+    (retract (lista ?restando1 ?restando2)) 
     (printout t "El resultado de la resta es:" resultadoResta)
 )
 
@@ -60,7 +60,7 @@
     (?resultadoOp = resultadoMultiplicacion)
     =>
     (assert (lista resultadoOp))
-    (retract (lista ?mult1 ?mult2) 
+    (retract (lista ?mult1 ?mult2)) 
     (printout t "El resultado de la multiplicacion es:" resultadoMultiplicacion))
 
 (defrule dividir-numeros
@@ -71,5 +71,5 @@
     (test((= mod(?dividendo ?divisor) ?resto))
     =>
     (assert (lista resultadoOp))
-    (retract (lista ?dividendo ?divisor)  
+    (retract (lista ?dividendo ?divisor))  
     (printout t "El resultado de la division es:" resultadoDivision))
