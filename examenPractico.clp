@@ -27,6 +27,7 @@
 (defrule acabar
     (declare (salience 99))
     (resulado ?resultado)
+    ((=length(lista),0))
     (?resultado = resultadoOp)
     (test (= resultado ?resultado))
     => 
@@ -36,51 +37,36 @@
 (defrule sumar
     (lista ?sumando1 ?sumando2 resultado)
     (?resultadoSuma = (?sumando1 + ?sumando2)
-    (?resultadoOp = ?resultadoSuma)	 	
-    
+    (?resultadoOp = ?resultadoSuma)	 	 
     =>
-    (assert (robot ?robotX ?robotY true 0 camino $?camino))
+    (assert lista resultadoOp)
     (printout t "El resultado de la suma es:" resultadoSuma) 
 )
 
 (defrule restar
     (lista ?restando1 ?restando2 resultado)
-    (resultadoResta = (?restando1 + ?restando2)
-    (?resultadoOp = resultadoResta)	  
+    (resultadoResta = (?restando1 + ?restando2))
+    (?resultadoOp = resultadoResta)
+    (test(<= resultadoResta = (?restando1 + ?restando2), 0))	  
     =>
-    (assert (robot ?robotX ?robotY false ?profundidad camino $?camino))
-    (retract ?a)
-    (assert (almacen ?almacenX ?almacenY true))
-    (assert (paquete ?almacenX ?almacenY))
-    (printout t "El camino que hizo el robot para entregar el paquete es:" $?camino)
+    (assert lista resultadoOp)
+    (printout t "El resultado de la resta es:" resultadoResta)
 )
 
 (defrule multiplicar
     (lista ?restando1 ?restando2 resultado)
-    (resultadoResta = (?restando1 * ?restando2)
+    (resultadoMultiplicacion = (?restando1 * ?restando2)
     (?resultadoOp = resultadoMultiplicacion)
-    => 
-    (assert (robot (+ ?robotX 1) ?robotY ?estado =(+ ?profundidad 1) camino $?camino x (+ ?robotX 1) y ?robotY))
-)
+    =>
+    (assert lista resultadoOp)
+    (printout t "El resultado de la multiplicacion es:" resultadoMultiplicacion))
 
 (defrule dividir
     (lista ?dividendo ?divisor ?resto resultado)
-    (?resto = 0)
-    ((= mod(?dividendo ?divisor), ?resto)  
+    (?resto = 0)  
     (resultadoResta = (div (?dividendo ?divisor)))
     (?resultadoOp = resultadoDivision)
-    => 
-    (assert (robot (- ?robotX 1) ?robotY ?estado =(+ ?profundidad 1) camino $?camino x (- ?robotX 1) y ?robotY))
-)
-
-
-
-(defrule mover-a-abajo
-    (cuadricula ?Xmax ?Ymax)
-    (robot ?robotX ?robotY ?estado ?profundidad camino $?camino)
-    (not (obstaculos $?inicio x ?robotX y =(+ ?robotY 1) $?fin))  
-    (test (<= (+ ?robotY 1) ?Ymax))
-    (test (<= ?profundidad ?*profundidad-maxima*))
-    => 
-    (assert (robot ?robotX (+ ?robotY 1) ?estado =(+ ?profundidad 1) camino $?camino x ?robotX y (+ ?robotY 1)))
-)
+    (test((= mod(?dividendo ?divisor), ?resto))
+    =>
+    (assert lista resultadoOp) 
+    (printout t "El resultado de la division es:" resultadoDivision))
