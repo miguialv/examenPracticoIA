@@ -26,47 +26,46 @@
 
 (defrule acabar
     (declare (salience 99))
-    (resulado ?resultado)
-    ((=length(lista),0))
     (?resultado = resultadoOp)
     (test (= resultado ?resultado))
+    (test(=(length(lista) 0)))
     => 
     (halt)
 )
 
-(defrule sumar
-    (lista ?sumando1 ?sumando2 resultado)
+(defrule sumar-numeros
+    (lista ?sumando1 ?sumando2)
     (?resultadoSuma = (?sumando1 + ?sumando2)
     (?resultadoOp = ?resultadoSuma)	 	 
     =>
-    (assert lista resultadoOp)
+    (assert (lista resultadoOp))
     (printout t "El resultado de la suma es:" resultadoSuma) 
 )
 
-(defrule restar
-    (lista ?restando1 ?restando2 resultado)
-    (resultadoResta = (?restando1 + ?restando2))
+(defrule restar-numeros
+    (lista ?restando1 ?restando2)
+    (?resultadoResta = (?restando1 + ?restando2))
     (?resultadoOp = resultadoResta)
-    (test(<= resultadoResta = (?restando1 + ?restando2), 0))	  
+    (test(<= ?resultadoResta 0))	  
     =>
-    (assert lista resultadoOp)
+    (assert (lista resultadoOp))
     (printout t "El resultado de la resta es:" resultadoResta)
 )
 
-(defrule multiplicar
-    (lista ?restando1 ?restando2 resultado)
-    (resultadoMultiplicacion = (?restando1 * ?restando2)
+(defrule multiplicar-numeros
+    (lista ?restando1 ?restando2)
+    (?resultadoMultiplicacion = (?restando1 * ?restando2)
     (?resultadoOp = resultadoMultiplicacion)
     =>
-    (assert lista resultadoOp)
+    (assert (lista resultadoOp))
     (printout t "El resultado de la multiplicacion es:" resultadoMultiplicacion))
 
-(defrule dividir
-    (lista ?dividendo ?divisor ?resto resultado)
+(defrule dividir-numeros
+    (lista ?dividendo ?divisor ?resto)
     (?resto = 0)  
-    (resultadoResta = (div (?dividendo ?divisor)))
+    (?resultadoResta = (div (?dividendo ?divisor)))
     (?resultadoOp = resultadoDivision)
-    (test((= mod(?dividendo ?divisor), ?resto))
+    (test((= mod(?dividendo ?divisor) ?resto))
     =>
-    (assert lista resultadoOp) 
+    (assert (lista resultadoOp)) 
     (printout t "El resultado de la division es:" resultadoDivision))
