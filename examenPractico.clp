@@ -27,25 +27,26 @@
 (defrule acabar
     (declare (salience 99))
     (resulado ?resultado)
+    (?resultado = resultadoOp)
     (test (= resultado ?resultado))
     => 
     (halt)
 )
 
 (defrule sumar
-    (robot ?robotX ?robotY false ?profundidad camino $?camino)
-    (paquete ?paqX ?paqY)
-    (test (= ?robotX ?paqX)) 
-    (test (= ?robotY ?paqY))
+    (lista ?sumando1 ?sumando2 resultado)
+    (?resultadoSuma = (?sumando1 + ?sumando2)
+    (?resultadoOp = ?resultadoSuma)	 	
+    
     =>
-    (assert (robot ?robotX ?robotY true 0 camino $?camino)) 
+    (assert (robot ?robotX ?robotY true 0 camino $?camino))
+    (printout t "El resultado de la suma es:" resultadoSuma) 
 )
 
 (defrule restar
-    (robot ?robotX ?robotY true ?profundidad camino $?camino)
-    ?a <- (almacen ?almacenX ?almacenY ?estado) 
-    (test (= ?robotX ?almacenX))
-    (test (= ?robotY ?almacenY)) 
+    (lista ?restando1 ?restando2 resultado)
+    (resultadoResta = (?restando1 + ?restando2)
+    (?resultadoOp = resultadoResta)	  
     =>
     (assert (robot ?robotX ?robotY false ?profundidad camino $?camino))
     (retract ?a)
@@ -55,34 +56,24 @@
 )
 
 (defrule multiplicar
-    (cuadricula ?Xmax ?Ymax)
-    (robot ?robotX ?robotY ?estado ?profundidad camino $?camino)
-    (not (obstaculos $?inicio x =(+ ?robotX 1) y ?robotY $?fin))
-    (test (<= (+ ?robotX 1) ?Xmax))
-    (test (<= ?profundidad ?*profundidad-maxima*))
+    (lista ?restando1 ?restando2 resultado)
+    (resultadoResta = (?restando1 * ?restando2)
+    (?resultadoOp = resultadoMultiplicacion)
     => 
     (assert (robot (+ ?robotX 1) ?robotY ?estado =(+ ?profundidad 1) camino $?camino x (+ ?robotX 1) y ?robotY))
 )
 
 (defrule dividir
-    (cuadricula ?Xmax ?Ymax)
-    (robot ?robotX ?robotY ?estado ?profundidad camino $?camino)
-    (not (obstaculos $?inicio x =(- ?robotX 1) y ?robotY $?fin))  
-    (test (>= (- ?robotX 1) 1))
-    (test (<= ?profundidad ?*profundidad-maxima*))
+    (lista ?dividendo ?divisor ?resto resultado)
+    (?resto = 0)
+    ((= mod(?dividendo ?divisor), ?resto)  
+    (resultadoResta = (div (?dividendo ?divisor)))
+    (?resultadoOp = resultadoDivision)
     => 
     (assert (robot (- ?robotX 1) ?robotY ?estado =(+ ?profundidad 1) camino $?camino x (- ?robotX 1) y ?robotY))
 )
 
-(defrule mover-a-arriba
-    (cuadricula ?Xmax ?Ymax)
-    (robot ?robotX ?robotY ?estado ?profundidad camino $?camino)
-    (not (obstaculos $?inicio x ?robotX y =(- ?robotY 1) $?fin))
-    (test (>= (- ?robotY 1) 1))
-    (test (<= ?profundidad ?*profundidad-maxima*))
-    => 
-    (assert (robot ?robotX (- ?robotY 1) ?estado =(+ ?profundidad 1) camino $?camino x ?robotX y (- ?robotY 1)))
-)
+
 
 (defrule mover-a-abajo
     (cuadricula ?Xmax ?Ymax)
